@@ -1,0 +1,7 @@
+codigo,descricao
+1,Um adulto sem criança
+2,Um adulto com ao menos uma criança
+3,Mais de um adulto sem criança
+4,Mais de um adulto com ao menos uma criança
+5,Um ou mais idosos com ou sem crianças
+6,"Um ou mais idosos, com ao menos um adulto, com ou sem crianças"

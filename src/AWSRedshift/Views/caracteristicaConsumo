@@ -1,0 +1,31 @@
+CREATE VIEW caracteristica_consumo AS
+SELECT
+  caracteristicas_dieta.COD_UPA,
+  caracteristicas_dieta.UF AS UF_NOME,
+  uf.UF AS uf,
+  caracteristicas_dieta.renda_total,
+  caracteristicas_dieta.num_uc,
+  caracteristicas_dieta.V7101 AS tipo_adocante,
+  caracteristicas_dieta.V7102 AS sal,
+  caracteristicas_dieta.V71037 AS suplemento_atleta,
+  caracteristicas_dieta.V7104 AS faz_dieta,
+  caracteristicas_dieta.V71051 AS dieta_emagrecer,
+  caracteristicas_dieta.V71052 AS dieta_pressao_alta,
+  caracteristicas_dieta.V71053 AS dieta_colesterol,
+  caracteristicas_dieta.V71054 AS dieta_diabetes,
+  caracteristicas_dieta.V71055 AS dieta_coracao,
+  caracteristicas_dieta.V71056 AS outra_dieta,
+  caracteristicas_dieta.V71A01 AS gravida,
+  caracteristicas_dieta.V71A02 AS amamentando,
+  consumo_alimentar_pof.v9015 AS horario_consumo,
+  consumo_alimentar_pof.v9016 AS forma_preparacao,
+  consumo_alimentar_pof.v9017 AS ocasiao_consumo,
+  consumo_alimentar_pof.v9018 AS local_refeicao,
+  consumo_alimentar_pof.DIA_SEMANA,
+  consumo_alimentar_pof.DIA_ATIPICO
+FROM
+  caracteristicas_dieta
+JOIN
+  consumo_alimentar_pof ON caracteristicas_dieta.COD_UPA = consumo_alimentar_pof.COD_UPA
+JOIN
+  uf ON caracteristicas_dieta.COD_UPA = uf.COD_UPA; 

@@ -1,0 +1,92 @@
+import pandas as pd
+import boto3
+from os import listdir, scandir
+from os.path import isfile, join
+from io import StringIO
+import os
+from unidecode import unidecode
+
+class S3Uploader:
+    def __init__(self, bucket_name, aws_access_key_id, aws_secret_access_key, aws_session_token):
+        self.s3 = boto3.client(
+            's3',
+            region_name='us-east-1',
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            aws_session_token=aws_session_token
+        )
+        self.bucket_name = bucket_name
+
+    def clean_text(self, s):
+        s = unidecode(s).replace('@', '_').replace(' ', '_')
+        return s[:127]  # Truncate to 127 chars for VARCHAR
+
+    def load_mappings(self, mapping_folder):
+        print("Carregando mapeamentos...")
+        mappings = {}
+        for file_name in listdir(mapping_folder):
+            if file_name.endswith('.csv'):
+                column_name = file_name[:-4]
+                path = join(mapping_folder, file_name)
+                df_mapping = pd.read_csv(path, dtype={'codigo': str, 'descricao': str})
+                mappings[column_name] = df_mapping.set_index('codigo')['descricao'].to_dict()
+        return mappings
+
+    def read_and_prepare_data(self, file_path, mapping_folder):
+        print(f"Lendo dados de {file_path}...")
+        df = pd.read_csv(file_path, dtype=str, low_memory=False, sep=';')
+        df.fillna('NULL', inplace=True)
+
+        print("Aplicando mapeamentos...")
+        mappings = self.load_mappings(mapping_folder)
+        
+        varchar_columns = ['numero', 'complemento', 'bairro', 'email','situacao_cadastral', 'identificador_matriz_filial' ]  # Add other VARCHAR columns here
+        integer_columns = ['cep', 'ddd_1', 'telefone_1', 'ddd_2', 'telefone_2', 'ddd_fax', 'fax']  # Add other INTEGER columns here
+        
+        for col in df.columns:
+            if col in mappings:
+                df[col] = df[col].map(mappings[col]).fillna(df[col])
+            if col in varchar_columns:
+                df[col] = df[col].apply(lambda x: x[:127])  # Truncate to 127 chars
+            if col in integer_columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+        
+        print("Limpando texto...")
+        for col in varchar_columns:
+            df[col] = df[col].apply(self.clean_text)
+
+        return df
+
+    def upload_file(self, file_path, s3_path, mapping_folder):
+        df = self.read_and_prepare_data(file_path, mapping_folder)
+        print("Dados processados:")
+        print(df.head())
+
+        csv_buffer = StringIO()
+        df.to_csv(csv_buffer, sep=',', index=False, encoding='utf-8')
+        self.s3.put_object(Bucket=self.bucket_name, Key=s3_path, Body=csv_buffer.getvalue())
+        print(f"Uploaded {file_path} to S3 bucket {self.bucket_name} at {s3_path}")
+
+    def upload_folder_to_s3(self, folder_path, s3_folder, mapping_folder):
+        print(f"Processando pasta: {folder_path}")
+        for entry in scandir(folder_path):
+            if entry.is_file() and entry.name.endswith('.csv'):
+                self.upload_file(entry.path, f"{s3_folder}/{entry.name}", mapping_folder)
+
+if __name__ == "__main__":
+    aws_access_key_id = ''
+    aws_secret_access_key = ''
+    aws_session_token = ''
+    bucket_name = 'bigbytes-cnpj'
+
+    folder_path = '../../dados/dados_cnpj/3'
+    s3_folder = 'cnpjs'
+    mapping_folder = '../../dicionarios/cnpj'
+
+    if not os.path.isdir(folder_path) or not os.path.isdir(mapping_folder):
+        print("Erro: Diretório de dados ou mapeamentos não encontrado.")
+        exit()
+    
+    uploader = S3Uploader(bucket_name, aws_access_key_id, aws_secret_access_key, aws_session_token)
+    uploader.upload_folder_to_s3(folder_path, s3_folder, mapping_folder)
+    print("Script de upload finalizado.")

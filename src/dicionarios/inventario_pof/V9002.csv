@@ -1,0 +1,12 @@
+codigo,descricao
+1,Monetária à vista para a Unidade de Consumo
+2,Monetária à vista para outra Unidade de Consumo
+3,Monetária a prazo para a Unidade de Consumo
+4,Monetária a prazo para outra Unidade de Consumo
+5,Cartão de crédito à vista para a Unidade de Consumo
+6,Cartão de crédito à vista para outra Unidade de Consumo
+7,Doação
+8,Retirada do Negócio
+9,Troca
+10,Produção Própria
+11,Outra

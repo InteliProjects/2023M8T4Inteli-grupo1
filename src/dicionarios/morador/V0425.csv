@@ -1,0 +1,16 @@
+codigo,descricao
+01,Creche
+02,Pré-escola
+03,Classe de alfabetização – CA
+04,Alfabetização de jovens e adultos
+05,Antigo primário (elementar)
+06,Antigo ginasial (médio 1º ciclo)
+07,Regular do ensino fundamental ou do 1º grau
+08,Educação de jovens e adultos – EJA do ensino fundamental ou supletivo do 1º grau
+09,"Antigo científico, clássico, etc. (médio 2º ciclo)"
+10,Regular do ensino médio ou do 2º grau
+11,Educação de jovens e adultos – EJA do ensino médio ou supletivo do 2º grau
+12,Superior – graduação
+13, Especialização de nível superior (duração mínima de 360 horas)
+14,Mestrado
+15,Doutorado

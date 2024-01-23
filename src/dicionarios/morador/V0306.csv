@@ -1,0 +1,20 @@
+codigo,descricao
+01,Pessoa de referência da UC 
+02,Cônjuge ou companheiro(a) de sexo diferente 
+03,Cônjuge ou companheiro(a) do mesmo sexo 
+04,Filho(a) da pessoa de referência e do cônjuge 
+05,Filho(a) somente da pessoa de referência 
+06,Filho(a) somente do cônjuge
+07,Genro ou nora
+08,"Pai, mãe, padrasto ou madrasta"
+09,Sogro(a)
+10,Neto(a)
+11,Bisneto(a)
+12,Irmão ou irmã
+13,Avô ou avó
+14,Outro parente
+15,Agregado(a) – não parente que não compartilha despesas
+16,Convivente – não parente que compartilha despesas
+17,Pensionista
+18,Empregado(a) doméstico(a)
+19,Parente do(a) empregado(a) doméstico(a)

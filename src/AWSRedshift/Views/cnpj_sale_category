@@ -1,0 +1,27 @@
+CREATE VIEW cnpj_union_view_category  AS
+WITH cnpj_union AS (
+    SELECT cnpj, sigla_uf 
+    FROM "group1"."public"."cnpj1" 
+    UNION 
+    SELECT CAST(cnpj AS character varying), CAST(sigla_uf AS character varying) 
+    FROM "group1"."public"."cnpj2" 
+    UNION 
+    SELECT CAST(cnpj AS character varying), CAST(sigla_uf AS character varying) 
+    FROM "group1"."public"."cnpj3" 
+    UNION 
+    SELECT CAST(cnpj AS character varying), CAST(sigla_uf AS character varying) 
+    FROM "group1"."public"."cnpj4"
+)
+SELECT 
+    cnpj_union.cnpj, 
+    cnpj_union.sigla_uf,
+    sale.amount AS quantidade,
+    sale.value AS valor,
+    sale.idcategory AS categoria,
+    category.name AS nome_categoria
+FROM 
+    cnpj_union 
+INNER JOIN 
+    "group1"."public"."sale" ON cnpj_union.cnpj = sale.cnpj
+INNER JOIN
+    "group1"."public"."category" ON sale.idcategory = category.id;

@@ -1,0 +1,24 @@
+CREATE VIEW "public"."consumo_domicilio" AS
+SELECT
+   d.num_dom,
+   d.v0201 AS tipo_de_domicilio,
+   d.v0209 AS agua_canalizada,
+   d.v0217 AS alugado_ou_nao,
+   d.v0221 AS correios,
+   m.tipo_situacao_reg,
+   m.v0306 AS grau_de_parentesco,
+   m.v0403 AS idade,
+   m.v0407 AS rendimento,
+   m.v041711 AS cafe_creche,
+   m.v041712 AS cafe_creche_sem_custo,
+   m.v041721 AS lanche_creche,
+   m.v041722 AS lanche_creche_sem_custo,
+   m.v041731 AS "almoÇo_creche",
+   m.v041732 AS "almoÇo_creche_sem_custo",
+   m.v041741 AS jantar_creche,
+   m.v041742 AS jantar_creche_sem_custo,
+   m.renda_total,
+   m.nivel_instrucao
+FROM
+   pof_domicilio d
+   JOIN pof_morador m ON d.num_dom = m.num_dom;
